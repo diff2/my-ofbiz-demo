@@ -37,6 +37,7 @@ import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilGenerics;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilValidate;
+import org.ofbiz.base.util.collections.PagedList;
 import org.ofbiz.entity.Delegator;
 import org.ofbiz.entity.GenericEntity;
 import org.ofbiz.entity.GenericEntityException;
@@ -520,4 +521,43 @@ public class EntityUtil {
 
         return fieldList;
     }
+    
+    /**
+     * @param viewIndex
+     * @param viewSize
+     * @return the calculated start index based on viewIndex and viewSize
+     * @see EntityUtil#getPagedList
+     */
+    public static int getStartIndexFromViewIndex(int viewIndex, int viewSize) {
+        if (viewIndex == 0) {
+            return 1;
+        }
+        return (viewIndex * viewSize) + 1;
+    }
+
+    /**
+     * @param iter EntityListIterator
+     * @param viewIndex 
+     * @param viewSize
+     * @return PagedList object with a subset of data items from EntityListIterator based on viewIndex and viewSize
+     * @throws GenericEntityException
+     * @see org.ofbiz.entity.util.EntityListIterator
+     */
+    public static PagedList<GenericValue> getPagedList(EntityListIterator iter, int viewIndex, int viewSize) throws GenericEntityException {
+        int startIndex = getStartIndexFromViewIndex(viewIndex, viewSize);
+        int endIndex = (startIndex + viewSize) - 1;
+
+        List<GenericValue> dataItems = iter.getPartialList(startIndex, viewSize);
+        if (dataItems.size() < viewIndex) {
+            endIndex = (endIndex - viewSize) + dataItems.size();
+        }
+
+        int size = iter.getResultsSizeAfterPartialList();
+        if (endIndex > size) {
+            endIndex = size;
+        }
+
+        return new PagedList<GenericValue>(startIndex, endIndex, size, viewIndex, viewSize, dataItems);
+    }
+    
 }
