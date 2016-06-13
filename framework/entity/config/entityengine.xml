@@ -325,7 +325,7 @@ access. For a detailed description see the core/docs/entityconfig.html file.
     <datasource name="localmysql"
             helper-class="org.ofbiz.entity.datasource.GenericHelperDAO"
             field-type-name="mysql"
-            check-on-start="true"
+            check-on-start="false"
             add-missing-on-start="true"
             check-pks-on-start="false"
             use-foreign-keys="true"
