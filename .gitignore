@@ -48,3 +48,4 @@ debian/orig-work
 *.iml
 *~
 *#
+nohup.out
